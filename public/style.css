@@ -505,6 +505,32 @@ th {
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
+.compact-table table { min-width: 520px; }
+.compact-form {
+  gap: 0.5rem;
+  min-width: 260px;
+}
+.compact-form textarea {
+  min-height: 72px;
+}
+.table-input {
+  min-width: 88px;
+  padding: 0.58rem 0.62rem;
+}
+.table-actions,
+.qty-control {
+  align-items: center;
+  margin-top: 0;
+}
+.qty-control {
+  display: flex;
+  gap: 0.45rem;
+  min-width: 170px;
+}
+.qty-control .table-input {
+  width: 78px;
+  min-width: 78px;
+}
 .timeline {
   display: grid;
   gap: 0.7rem;

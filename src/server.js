@@ -267,6 +267,10 @@ function runOverdueHandling(db) {
       id: createId('trx'), userId: order.buyerUserId, type: 'auto_refund', amount: order.finalTotal,
       note: `Refund otomatis untuk order ${order.id}`, createdAt: nowISO(db)
     });
+    for (const item of order.items) {
+      const product = db.products.find((productItem) => productItem.id === item.productId);
+      if (product) product.stock += item.quantity;
+    }
     const job = db.deliveryJobs.find((item) => item.orderId === order.id);
     if (job && job.status !== 'completed') {
       job.status = 'returned';
@@ -718,6 +722,18 @@ app.get('/api/driver/jobs', authRequired, requireActiveRole('Driver'), (req, res
   res.json({ available, mine });
 });
 
+app.get('/api/driver/jobs/:id', authRequired, requireActiveRole('Driver'), (req, res) => {
+  const db = readDb();
+  const job = db.deliveryJobs.find((item) => item.id === req.params.id);
+  if (!job) return error(res, 404, 'Job tidak ditemukan.');
+  if (job.status !== 'available' && job.driverUserId !== req.user.id) {
+    return error(res, 403, 'Driver hanya boleh melihat job yang tersedia atau job miliknya.');
+  }
+  const order = db.orders.find((item) => item.id === job.orderId);
+  if (!order) return error(res, 404, 'Order untuk job tidak ditemukan.');
+  res.json({ job: { ...job, order: exposeOrder(db, order) } });
+});
+
 app.post('/api/driver/jobs/:id/take', authRequired, requireActiveRole('Driver'), (req, res) => {
   const db = readDb();
   const job = db.deliveryJobs.find((item) => item.id === req.params.id);
@@ -830,9 +846,23 @@ app.get('/api/admin/vouchers', authRequired, requireAdmin, (_req, res) => {
   res.json({ vouchers: db.vouchers });
 });
 
+app.get('/api/admin/vouchers/:id', authRequired, requireAdmin, (req, res) => {
+  const db = readDb();
+  const voucher = db.vouchers.find((item) => item.id === req.params.id || item.code === req.params.id.toUpperCase());
+  if (!voucher) return error(res, 404, 'Voucher tidak ditemukan.');
+  res.json({ voucher });
+});
+
 app.get('/api/admin/promos', authRequired, requireAdmin, (_req, res) => {
   const db = readDb();
   res.json({ promos: db.promos });
+});
+
+app.get('/api/admin/promos/:id', authRequired, requireAdmin, (req, res) => {
+  const db = readDb();
+  const promo = db.promos.find((item) => item.id === req.params.id || item.code === req.params.id.toUpperCase());
+  if (!promo) return error(res, 404, 'Promo tidak ditemukan.');
+  res.json({ promo });
 });
 
 app.post('/api/admin/simulate-next-day', authRequired, requireAdmin, (_req, res) => {

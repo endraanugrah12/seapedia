@@ -514,6 +514,13 @@ async function renderSellerDashboard() {
     try { await api('/api/seller/products', { method: 'POST', body: JSON.stringify(fd) }); showToast('Produk ditambahkan.'); renderSellerDashboard(); }
     catch (err) { showToast(err.message, true); }
   });
+  document.querySelectorAll('.update-product-form').forEach((form) => form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const fd = formData(event.target);
+    fd.price = Number(fd.price); fd.stock = Number(fd.stock);
+    try { await api(`/api/seller/products/${event.target.dataset.id}`, { method: 'PUT', body: JSON.stringify(fd) }); showToast('Produk diperbarui.'); renderSellerDashboard(); }
+    catch (err) { showToast(err.message, true); }
+  }));
   document.querySelectorAll('.delete-product').forEach((button) => button.addEventListener('click', async () => {
     if (!confirm('Hapus produk ini?')) return;
     try { await api(`/api/seller/products/${button.dataset.id}`, { method: 'DELETE' }); showToast('Produk dihapus.'); renderSellerDashboard(); }
@@ -527,8 +534,25 @@ async function renderSellerDashboard() {
 
 function productsTable(products) {
   if (!products.length) return '<div class="empty">Belum ada produk.</div>';
-  return `<div class="table-wrap"><table><thead><tr><th>Nama</th><th>Store</th><th>Harga</th><th>Stok</th><th>Aksi</th></tr></thead><tbody>${products.map(p => `
-    <tr><td><strong>${escapeHTML(p.name)}</strong><br><span class="meta">${escapeHTML(p.description)}</span></td><td>${escapeHTML(p.store?.name || '-')}</td><td>${rupiah.format(p.price)}</td><td>${p.stock}</td><td><button class="btn danger delete-product" data-id="${p.id}">Delete</button></td></tr>
+  return `<div class="table-wrap"><table><thead><tr><th>Produk</th><th>Store</th><th>Harga</th><th>Stok</th><th>Aksi</th></tr></thead><tbody>${products.map(p => `
+    <tr>
+      <td>
+        <form id="product-update-${p.id}" class="form update-product-form compact-form" data-id="${p.id}">
+          <div class="form-row"><label>Nama</label><input name="name" required value="${escapeHTML(p.name)}" /></div>
+          <div class="form-row"><label>Deskripsi</label><textarea name="description" required>${escapeHTML(p.description)}</textarea></div>
+          <input name="imageUrl" type="hidden" value="${escapeHTML(p.imageUrl || '')}" />
+        </form>
+      </td>
+      <td>${escapeHTML(p.store?.name || '-')}</td>
+      <td><input class="input table-input" form="product-update-${p.id}" name="price" type="number" min="1" value="${p.price}" /></td>
+      <td><input class="input table-input" form="product-update-${p.id}" name="stock" type="number" min="0" value="${p.stock}" /></td>
+      <td>
+        <div class="actions table-actions">
+          <button class="btn update-product-submit" type="submit" form="product-update-${p.id}">Update</button>
+          <button class="btn danger delete-product" data-id="${p.id}">Delete</button>
+        </div>
+      </td>
+    </tr>
   `).join('')}</tbody></table></div>`;
 }
 
@@ -547,6 +571,10 @@ async function renderBuyerDashboard() {
       <div class="card">
         <h3>Dummy Top-up</h3>
         <form id="topup-form" class="form"><div class="form-row"><label>Jumlah</label><input name="amount" type="number" min="1000" value="500000" /></div><button class="btn">Top-up</button></form>
+        <div class="section">
+          <h4>Wallet Transaction History</h4>
+          ${walletTransactions(walletRes.transactions)}
+        </div>
       </div>
       <div class="card">
         <h3>Alamat Pengiriman</h3>
@@ -612,16 +640,45 @@ async function renderBuyerDashboard() {
     try { await api(`/api/buyer/cart/items/${button.dataset.id}`, { method: 'PUT', body: JSON.stringify({ quantity: 0 }) }); showToast('Item dihapus dari cart.'); renderBuyerDashboard(); }
     catch (err) { showToast(err.message, true); }
   }));
+  document.querySelectorAll('.cart-qty-form').forEach((form) => form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    try {
+      await api(`/api/buyer/cart/items/${event.target.dataset.id}`, { method: 'PUT', body: JSON.stringify({ quantity: Number(formData(event.target).quantity) }) });
+      showToast('Quantity cart diperbarui.');
+      renderBuyerDashboard();
+    } catch (err) { showToast(err.message, true); }
+  }));
   document.querySelector('#clear-cart')?.addEventListener('click', async () => {
     try { await api('/api/buyer/cart', { method: 'DELETE' }); showToast('Cart dikosongkan.'); renderBuyerDashboard(); }
     catch (err) { showToast(err.message, true); }
   });
 }
 
+function walletTransactions(transactions = []) {
+  if (!transactions.length) return '<p class="meta">Belum ada transaksi wallet.</p>';
+  return `<div class="table-wrap compact-table"><table><thead><tr><th>Tipe</th><th>Jumlah</th><th>Waktu</th></tr></thead><tbody>${transactions.slice(0, 6).map((transaction) => `
+    <tr>
+      <td><strong>${escapeHTML(transaction.type)}</strong><br><span class="meta">${escapeHTML(transaction.note || '')}</span></td>
+      <td>${rupiah.format(transaction.amount)}</td>
+      <td>${formatDate(transaction.createdAt)}</td>
+    </tr>
+  `).join('')}</tbody></table></div>`;
+}
+
 function cartSummary(cart) {
   if (!cart.items.length) return '<div class="empty">Cart kosong. Buka katalog produk untuk menambah item.</div>';
   return `<div class="table-wrap"><table><thead><tr><th>Produk</th><th>Qty</th><th>Total</th><th>Aksi</th></tr></thead><tbody>${cart.items.map(item => `
-    <tr><td><strong>${escapeHTML(item.product.name)}</strong><br><span class="meta">${escapeHTML(cart.store?.name || '')}</span></td><td>${item.quantity}</td><td>${rupiah.format(item.lineTotal)}</td><td><button class="btn danger remove-cart" data-id="${item.productId}">Remove</button></td></tr>
+    <tr>
+      <td><strong>${escapeHTML(item.product.name)}</strong><br><span class="meta">${escapeHTML(cart.store?.name || '')}</span></td>
+      <td>
+        <form class="cart-qty-form qty-control" data-id="${item.productId}">
+          <input class="input table-input" name="quantity" type="number" min="1" value="${item.quantity}" />
+          <button class="btn secondary">Update</button>
+        </form>
+      </td>
+      <td>${rupiah.format(item.lineTotal)}</td>
+      <td><button class="btn danger remove-cart" data-id="${item.productId}">Remove</button></td>
+    </tr>
   `).join('')}<tr><td colspan="2"><strong>Subtotal</strong></td><td colspan="2"><strong>${rupiah.format(cart.subtotal)}</strong></td></tr></tbody></table></div><div class="actions"><button id="clear-cart" class="btn secondary">Clear Cart</button></div>`;
 }
 
