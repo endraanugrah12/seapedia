@@ -133,7 +133,7 @@ password123
 ## Struktur Folder
 
 ```text
-seapedia-compfest18/
+seapedia/
 ├── data/
 │   └── db.json
 ├── docs/
@@ -155,7 +155,7 @@ seapedia-compfest18/
 
 ## Deployment
 
-Aplikasi ini membutuhkan runtime Node.js karena frontend dan API dijalankan dari server Express yang sama. Platform yang cocok antara lain Render, Railway, Fly.io, atau VPS.
+Aplikasi ini membutuhkan runtime Node.js karena frontend dan API dijalankan dari server Express yang sama.
 
 Konfigurasi umum:
 
