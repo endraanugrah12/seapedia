@@ -135,7 +135,7 @@ password123
 - Overdue refund mengembalikan dana Buyer ke wallet, mencatat transaksi refund, mengembalikan stok produk, dan menandai delivery job sebagai returned.
 - Order returned tidak dihitung sebagai Seller income karena laporan Seller hanya menjumlahkan order dengan status `Pesanan Selesai`.
 
-## Checklist Demo Level 1-7
+## Fitur Aplikasi
 
 ### Guest, Review, dan Authentication
 
