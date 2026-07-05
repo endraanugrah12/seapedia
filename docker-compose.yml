@@ -13,6 +13,8 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.seapedia.rule=Host(`${SEAPEDIA_HOST}`)"
       - "traefik.http.routers.seapedia.entrypoints=${TRAEFIK_ENTRYPOINT:-web}"
+      - "traefik.http.routers.seapedia.tls=${TRAEFIK_TLS:-false}"
+      - "traefik.http.routers.seapedia.tls.certresolver=${TRAEFIK_CERTRESOLVER:-letsencrypt}"
       - "traefik.http.services.seapedia.loadbalancer.server.port=${PORT:-3000}"
       - "traefik.docker.network=${TRAEFIK_NETWORK}"
     networks:
