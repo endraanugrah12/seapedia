@@ -1,0 +1,79 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "SEAPEDIA API",
+    "version": "1.0.0",
+    "description": "API documentation for the SEAPEDIA marketplace application. Authentication uses Bearer JWT. Authorization follows the activeRole stored in the token."
+  },
+  "servers": [
+    { "url": "http://localhost:3000", "description": "Local development" }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": { "type": "http", "scheme": "bearer", "bearerFormat": "JWT" }
+    },
+    "schemas": {
+      "LoginRequest": {
+        "type": "object",
+        "required": ["identity", "password"],
+        "properties": {
+          "identity": { "type": "string", "example": "buyer@seapedia.test" },
+          "password": { "type": "string", "example": "password123" }
+        }
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "required": ["username", "email", "password", "roles"],
+        "properties": {
+          "username": { "type": "string", "example": "anugrah" },
+          "email": { "type": "string", "example": "anugrah@example.com" },
+          "password": { "type": "string", "example": "password123" },
+          "roles": { "type": "array", "items": { "type": "string", "enum": ["Buyer", "Seller", "Driver"] }, "example": ["Buyer", "Seller"] }
+        }
+      },
+      "RoleRequest": { "type": "object", "required": ["role"], "properties": { "role": { "type": "string", "enum": ["Admin", "Buyer", "Seller", "Driver"] } } },
+      "ReviewRequest": { "type": "object", "required": ["name", "rating", "comment"], "properties": { "name": { "type": "string" }, "rating": { "type": "integer", "minimum": 1, "maximum": 5 }, "comment": { "type": "string" } } },
+      "ProductRequest": { "type": "object", "required": ["name", "description", "price", "stock"], "properties": { "name": { "type": "string" }, "description": { "type": "string" }, "price": { "type": "integer" }, "stock": { "type": "integer" }, "imageUrl": { "type": "string" } } },
+      "CheckoutRequest": { "type": "object", "required": ["addressId", "deliveryMethod"], "properties": { "addressId": { "type": "string" }, "deliveryMethod": { "type": "string", "enum": ["Instant", "Next Day", "Regular"] }, "discountCode": { "type": "string", "example": "PROMO10" } } },
+      "DiscountRequest": { "type": "object", "required": ["code", "description", "amountType", "amount", "expiryDate"], "properties": { "code": { "type": "string" }, "description": { "type": "string" }, "amountType": { "type": "string", "enum": ["fixed", "percent"] }, "amount": { "type": "integer" }, "expiryDate": { "type": "string", "format": "date-time" }, "remainingUsage": { "type": "integer", "description": "Required for vouchers only." } } }
+    }
+  },
+  "paths": {
+    "/api/health": { "get": { "summary": "Health check and delivery method configuration", "responses": { "200": { "description": "OK" } } } },
+    "/api/auth/register": { "post": { "summary": "Register a non-admin user with one or more roles", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RegisterRequest" } } } }, "responses": { "201": { "description": "Registered" } } } },
+    "/api/auth/login": { "post": { "summary": "Login and receive JWT", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/LoginRequest" } } } }, "responses": { "200": { "description": "Logged in" } } } },
+    "/api/auth/role": { "post": { "summary": "Choose active role for current session", "security": [{ "bearerAuth": [] }], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RoleRequest" } } } }, "responses": { "200": { "description": "New token with active role" } } } },
+    "/api/auth/logout": { "post": { "summary": "Logout hint for stateless JWT clients", "security": [{ "bearerAuth": [] }], "responses": { "200": { "description": "Client should delete token" } } } },
+    "/api/me": { "get": { "summary": "Current logged-in user profile, roles, and active role", "security": [{ "bearerAuth": [] }], "responses": { "200": { "description": "Profile" } } } },
+    "/api/public/products": { "get": { "summary": "Public product catalog", "responses": { "200": { "description": "Product list" } } } },
+    "/api/public/products/{id}": { "get": { "summary": "Public product detail", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "responses": { "200": { "description": "Product detail" } } } },
+    "/api/public/stores/{id}": { "get": { "summary": "Public store summary and products", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "responses": { "200": { "description": "Store detail" } } } },
+    "/api/reviews": { "get": { "summary": "List public application reviews", "responses": { "200": { "description": "Review list" } } }, "post": { "summary": "Create public application review", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ReviewRequest" } } } }, "responses": { "201": { "description": "Review created" } } } },
+    "/api/seller/store": { "get": { "summary": "Get seller store", "security": [{ "bearerAuth": [] }], "responses": { "200": { "description": "Store" } } }, "post": { "summary": "Create or update seller store", "security": [{ "bearerAuth": [] }], "requestBody": { "content": { "application/json": { "schema": { "type": "object", "properties": { "name": { "type": "string" }, "description": { "type": "string" } } } } } }, "responses": { "200": { "description": "Store saved" } } } },
+    "/api/seller/products": { "get": { "summary": "List products owned by active seller", "security": [{ "bearerAuth": [] }], "responses": { "200": { "description": "Products" } } }, "post": { "summary": "Create product under seller's own store", "security": [{ "bearerAuth": [] }], "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ProductRequest" } } } }, "responses": { "201": { "description": "Product created" } } } },
+    "/api/seller/products/{id}": { "put": { "summary": "Update seller-owned product", "security": [{ "bearerAuth": [] }], "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ProductRequest" } } } }, "responses": { "200": { "description": "Updated" } } }, "delete": { "summary": "Delete seller-owned product", "security": [{ "bearerAuth": [] }], "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "responses": { "200": { "description": "Deleted" } } } },
+    "/api/seller/orders": { "get": { "summary": "Incoming and processed seller orders", "security": [{ "bearerAuth": [] }], "responses": { "200": { "description": "Orders" } } } },
+    "/api/seller/orders/{id}/process": { "post": { "summary": "Move order from Sedang Dikemas to Menunggu Pengirim", "security": [{ "bearerAuth": [] }], "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "responses": { "200": { "description": "Processed" } } } },
+    "/api/seller/reports": { "get": { "summary": "Seller income summary", "security": [{ "bearerAuth": [] }], "responses": { "200": { "description": "Report" } } } },
+    "/api/buyer/wallet": { "get": { "summary": "Buyer wallet and transaction history", "security": [{ "bearerAuth": [] }], "responses": { "200": { "description": "Wallet" } } } },
+    "/api/buyer/wallet/topup": { "post": { "summary": "Dummy wallet top-up", "security": [{ "bearerAuth": [] }], "requestBody": { "content": { "application/json": { "schema": { "type": "object", "properties": { "amount": { "type": "integer", "example": 500000 } } } } } }, "responses": { "200": { "description": "Top-up successful" } } } },
+    "/api/buyer/addresses": { "get": { "summary": "List buyer addresses", "security": [{ "bearerAuth": [] }], "responses": { "200": { "description": "Addresses" } } }, "post": { "summary": "Create buyer address", "security": [{ "bearerAuth": [] }], "responses": { "201": { "description": "Address created" } } } },
+    "/api/buyer/cart": { "get": { "summary": "Get cart summary with single-store rule", "security": [{ "bearerAuth": [] }], "responses": { "200": { "description": "Cart" } } }, "delete": { "summary": "Clear cart", "security": [{ "bearerAuth": [] }], "responses": { "200": { "description": "Cart cleared" } } } },
+    "/api/buyer/cart/items": { "post": { "summary": "Add product to cart and enforce single-store checkout", "security": [{ "bearerAuth": [] }], "responses": { "201": { "description": "Item added" } } } },
+    "/api/buyer/cart/items/{productId}": { "put": { "summary": "Update or remove cart item quantity", "security": [{ "bearerAuth": [] }], "parameters": [{ "name": "productId", "in": "path", "required": true, "schema": { "type": "string" } }], "responses": { "200": { "description": "Cart updated" } } } },
+    "/api/buyer/checkout/summary": { "post": { "summary": "Preview checkout totals including subtotal, discount, delivery fee, PPN 12%, and final total", "security": [{ "bearerAuth": [] }], "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CheckoutRequest" } } } }, "responses": { "200": { "description": "Summary" } } } },
+    "/api/buyer/checkout": { "post": { "summary": "Create order, charge wallet, reduce stock, and start order lifecycle", "security": [{ "bearerAuth": [] }], "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CheckoutRequest" } } } }, "responses": { "201": { "description": "Order created" } } } },
+    "/api/buyer/orders": { "get": { "summary": "Buyer order history and status timelines", "security": [{ "bearerAuth": [] }], "responses": { "200": { "description": "Orders" } } } },
+    "/api/buyer/reports": { "get": { "summary": "Buyer spending report", "security": [{ "bearerAuth": [] }], "responses": { "200": { "description": "Report" } } } },
+    "/api/discounts": { "get": { "summary": "Public list of voucher and promo codes for checkout demo", "responses": { "200": { "description": "Discounts" } } } },
+    "/api/driver/jobs": { "get": { "summary": "Available and owned driver jobs", "security": [{ "bearerAuth": [] }], "responses": { "200": { "description": "Jobs" } } } },
+    "/api/driver/jobs/{id}/take": { "post": { "summary": "Take a Menunggu Pengirim delivery job", "security": [{ "bearerAuth": [] }], "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "responses": { "200": { "description": "Job taken" } } } },
+    "/api/driver/jobs/{id}/complete": { "post": { "summary": "Confirm a delivery job as completed", "security": [{ "bearerAuth": [] }], "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "responses": { "200": { "description": "Job completed" } } } },
+    "/api/driver/reports": { "get": { "summary": "Driver job history and earnings", "security": [{ "bearerAuth": [] }], "responses": { "200": { "description": "Report" } } } },
+    "/api/admin/monitoring": { "get": { "summary": "Admin monitoring dashboard data for users, stores, products, orders, discounts, deliveries, and overdue orders", "security": [{ "bearerAuth": [] }], "responses": { "200": { "description": "Monitoring data" } } } },
+    "/api/admin/vouchers": { "get": { "summary": "List vouchers", "security": [{ "bearerAuth": [] }], "responses": { "200": { "description": "Voucher list" } } }, "post": { "summary": "Generate voucher", "security": [{ "bearerAuth": [] }], "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DiscountRequest" } } } }, "responses": { "201": { "description": "Voucher created" } } } },
+    "/api/admin/promos": { "get": { "summary": "List promos", "security": [{ "bearerAuth": [] }], "responses": { "200": { "description": "Promo list" } } }, "post": { "summary": "Generate promo", "security": [{ "bearerAuth": [] }], "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DiscountRequest" } } } }, "responses": { "201": { "description": "Promo created" } } } },
+    "/api/admin/simulate-next-day": { "post": { "summary": "Move system time forward one day and run overdue handling", "security": [{ "bearerAuth": [] }], "responses": { "200": { "description": "Simulation result" } } } },
+    "/api/admin/run-overdue": { "post": { "summary": "Run overdue auto return/refund without changing system time", "security": [{ "bearerAuth": [] }], "responses": { "200": { "description": "Overdue result" } } } }
+  }
+}

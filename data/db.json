@@ -1,0 +1,264 @@
+{
+  "system": {
+    "currentDate": "2026-06-10T18:04:10.950Z"
+  },
+  "users": [
+    {
+      "id": "u_admin",
+      "username": "admin",
+      "email": "admin@seapedia.test",
+      "passwordHash": "$2a$10$.96fyoAv29BuSkt1z2ZqoessYZVqcy1In727FQAh5zUSZNOvH7DhS",
+      "roles": [
+        "Admin"
+      ],
+      "createdAt": "2026-06-10T18:04:10.950Z"
+    },
+    {
+      "id": "u_seller",
+      "username": "seller",
+      "email": "seller@seapedia.test",
+      "passwordHash": "$2a$10$.96fyoAv29BuSkt1z2ZqoessYZVqcy1In727FQAh5zUSZNOvH7DhS",
+      "roles": [
+        "Seller"
+      ],
+      "createdAt": "2026-06-10T18:04:10.950Z"
+    },
+    {
+      "id": "u_buyer",
+      "username": "buyer",
+      "email": "buyer@seapedia.test",
+      "passwordHash": "$2a$10$.96fyoAv29BuSkt1z2ZqoessYZVqcy1In727FQAh5zUSZNOvH7DhS",
+      "roles": [
+        "Buyer"
+      ],
+      "createdAt": "2026-06-10T18:04:10.950Z"
+    },
+    {
+      "id": "u_driver",
+      "username": "driver",
+      "email": "driver@seapedia.test",
+      "passwordHash": "$2a$10$.96fyoAv29BuSkt1z2ZqoessYZVqcy1In727FQAh5zUSZNOvH7DhS",
+      "roles": [
+        "Driver"
+      ],
+      "createdAt": "2026-06-10T18:04:10.950Z"
+    },
+    {
+      "id": "u_multirole",
+      "username": "multi",
+      "email": "multi@seapedia.test",
+      "passwordHash": "$2a$10$.96fyoAv29BuSkt1z2ZqoessYZVqcy1In727FQAh5zUSZNOvH7DhS",
+      "roles": [
+        "Buyer",
+        "Seller",
+        "Driver"
+      ],
+      "createdAt": "2026-06-10T18:04:10.950Z"
+    }
+  ],
+  "stores": [
+    {
+      "id": "store_tech",
+      "sellerUserId": "u_seller",
+      "name": "Nusantara Tech Store",
+      "description": "Toko gadget dan aksesoris teknologi lokal."
+    },
+    {
+      "id": "store_multi",
+      "sellerUserId": "u_multirole",
+      "name": "Multi Role Mart",
+      "description": "Toko demo milik akun multi-role."
+    }
+  ],
+  "products": [
+    {
+      "id": "prod_keyboard",
+      "storeId": "store_tech",
+      "sellerUserId": "u_seller",
+      "name": "Mechanical Keyboard SEA Blue",
+      "description": "Keyboard mechanical ringkas dengan switch tactile dan layout produktif.",
+      "price": 480000,
+      "stock": 19,
+      "imageUrl": "https://placehold.co/800x500?text=Keyboard",
+      "createdAt": "2026-06-10T18:04:10.950Z"
+    },
+    {
+      "id": "prod_mouse",
+      "storeId": "store_tech",
+      "sellerUserId": "u_seller",
+      "name": "Wireless Mouse Swift",
+      "description": "Mouse wireless ringan untuk belajar, coding, dan desain.",
+      "price": 175000,
+      "stock": 35,
+      "imageUrl": "https://placehold.co/800x500?text=Mouse",
+      "createdAt": "2026-06-10T18:04:10.950Z"
+    },
+    {
+      "id": "prod_headset",
+      "storeId": "store_multi",
+      "sellerUserId": "u_multirole",
+      "name": "Headset Focus Pro",
+      "description": "Headset nyaman dengan mikrofon noise reduction untuk meeting dan kelas online.",
+      "price": 325000,
+      "stock": 18,
+      "imageUrl": "https://placehold.co/800x500?text=Headset",
+      "createdAt": "2026-06-10T18:04:10.950Z"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "rev_1",
+      "name": "Alya",
+      "rating": 5,
+      "comment": "Marketplace-nya mudah dipahami dan tampilannya rapi.",
+      "createdAt": "2026-06-10T18:04:10.950Z"
+    },
+    {
+      "id": "rev_2",
+      "name": "Bima",
+      "rating": 4,
+      "comment": "Katalognya mudah dipakai dan proses checkout terasa jelas.",
+      "createdAt": "2026-06-10T18:04:10.950Z"
+    },
+    {
+      "id": "rev_mr7s8iv6_4kxxur",
+      "name": "t3esararas",
+      "rating": 3,
+      "comment": "jelek",
+      "createdAt": "2026-06-10T18:04:10.950Z"
+    }
+  ],
+  "wallets": [
+    {
+      "userId": "u_buyer",
+      "balance": 1947400
+    },
+    {
+      "userId": "u_multirole",
+      "balance": 1000000
+    }
+  ],
+  "walletTransactions": [
+    {
+      "id": "trx_seed_buyer",
+      "userId": "u_buyer",
+      "type": "topup",
+      "amount": 1500000,
+      "note": "Seed balance",
+      "createdAt": "2026-06-10T18:04:10.950Z"
+    },
+    {
+      "id": "trx_seed_multi",
+      "userId": "u_multirole",
+      "type": "topup",
+      "amount": 1000000,
+      "note": "Seed balance",
+      "createdAt": "2026-06-10T18:04:10.950Z"
+    },
+    {
+      "id": "trx_mr7tiau1_8iv73r",
+      "userId": "u_buyer",
+      "type": "topup",
+      "amount": 500000,
+      "note": "Dummy top-up",
+      "createdAt": "2026-06-10T18:04:10.950Z"
+    },
+    {
+      "id": "trx_mr7tid1i_sni7r0",
+      "userId": "u_buyer",
+      "type": "topup",
+      "amount": 500000,
+      "note": "Dummy top-up",
+      "createdAt": "2026-06-10T18:04:10.950Z"
+    },
+    {
+      "id": "trx_mr7tint8_7uluuf",
+      "userId": "u_buyer",
+      "type": "checkout",
+      "amount": -552600,
+      "note": "Pembayaran order SEAPEDIA",
+      "createdAt": "2026-06-10T18:04:10.950Z"
+    }
+  ],
+  "addresses": [
+    {
+      "id": "addr_buyer_home",
+      "buyerUserId": "u_buyer",
+      "label": "Rumah",
+      "recipient": "Buyer Demo",
+      "phone": "081234567890",
+      "address": "Jl. Demo SEAPEDIA No. 18, Jakarta",
+      "isDefault": true
+    }
+  ],
+  "carts": [
+    {
+      "buyerUserId": "u_buyer",
+      "storeId": null,
+      "items": []
+    }
+  ],
+  "orders": [
+    {
+      "id": "ord_mr7tint8_wykmnx",
+      "buyerUserId": "u_buyer",
+      "sellerUserId": "u_seller",
+      "storeId": "store_tech",
+      "addressId": "addr_buyer_home",
+      "deliveryMethod": "Instant",
+      "deliveryFee": 15000,
+      "subtotal": 480000,
+      "discount": 0,
+      "discountType": null,
+      "discountCode": null,
+      "ppn": 57600,
+      "finalTotal": 552600,
+      "status": "Sedang Dikemas",
+      "statusHistory": [
+        {
+          "status": "Sedang Dikemas",
+          "timestamp": "2026-06-10T18:04:10.950Z",
+          "note": "Order dibuat setelah checkout berhasil."
+        }
+      ],
+      "items": [
+        {
+          "productId": "prod_keyboard",
+          "name": "Mechanical Keyboard SEA Blue",
+          "price": 480000,
+          "quantity": 1,
+          "storeId": "store_tech"
+        }
+      ],
+      "driverUserId": null,
+      "createdAt": "2026-06-10T18:04:10.950Z",
+      "updatedAt": "2026-06-10T18:04:10.950Z",
+      "dueAt": "2026-06-10T22:04:10.950Z",
+      "completedAt": null
+    }
+  ],
+  "deliveryJobs": [],
+  "vouchers": [
+    {
+      "id": "voucher_seed",
+      "code": "SEAHEMAT25K",
+      "description": "Potongan voucher Rp25.000",
+      "amountType": "fixed",
+      "amount": 25000,
+      "expiryDate": "2030-12-31T23:59:59.999Z",
+      "remainingUsage": 50,
+      "createdAt": "2026-06-10T18:04:10.950Z"
+    }
+  ],
+  "promos": [
+    {
+      "id": "promo_seed",
+      "code": "PROMO10",
+      "description": "Promo diskon 10%",
+      "amountType": "percent",
+      "amount": 10,
+      "expiryDate": "2030-12-31T23:59:59.999Z",
+      "createdAt": "2026-06-10T18:04:10.950Z"
+    }
+  ]
+}

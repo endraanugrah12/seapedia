@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">SEAPEDIA app mark</title>
+  <desc id="desc">A forest green ecommerce app icon with an S monogram and fresh green marketplace grid accent.</desc>
+  <g transform="translate(72 42)">
+    <rect x="18" y="102" width="332" height="344" rx="64" fill="#123D2C"/>
+    <path d="M112 126V100C112 52 145 26 184 26C223 26 256 52 256 100V126" fill="none" stroke="#68C776" stroke-width="34" stroke-linecap="round"/>
+    <path d="M235 186C213 167 158 161 135 188C101 231 243 229 228 292C217 338 147 336 114 308" fill="none" stroke="#F7FBF7" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+    <g fill="#68C776">
+      <rect x="258" y="306" width="34" height="34" rx="8"/>
+      <rect x="304" y="306" width="34" height="34" rx="8"/>
+      <rect x="258" y="352" width="34" height="34" rx="8"/>
+      <rect x="304" y="352" width="34" height="34" rx="8"/>
+    </g>
+  </g>
+</svg>

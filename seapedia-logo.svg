@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">SEAPEDIA logo</title>
+  <desc id="desc">A clean ecommerce logo with a forest green geometric shopping mark, an S monogram, a fresh green marketplace grid accent, and the SEAPEDIA wordmark.</desc>
+  <g transform="translate(104 62)">
+    <g id="mark">
+      <rect x="16" y="48" width="176" height="184" rx="34" fill="#123D2C"/>
+      <path d="M66 62V48C66 22 84 8 104 8C124 8 142 22 142 48V62" fill="none" stroke="#68C776" stroke-width="16" stroke-linecap="round"/>
+      <path d="M130 93C118 83 88 80 76 95C57 119 134 118 126 153C120 178 82 177 64 162" fill="none" stroke="#F7FBF7" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"/>
+      <g fill="#68C776">
+        <rect x="142" y="159" width="18" height="18" rx="4"/>
+        <rect x="166" y="159" width="18" height="18" rx="4"/>
+        <rect x="142" y="183" width="18" height="18" rx="4"/>
+        <rect x="166" y="183" width="18" height="18" rx="4"/>
+      </g>
+    </g>
+    <g transform="translate(248 68)">
+      <text x="0" y="103" fill="#123D2C" font-family="Inter, Avenir Next, Montserrat, Arial, sans-serif" font-size="98" font-weight="760" letter-spacing="3">SEAPEDIA</text>
+      <rect x="4" y="128" width="92" height="8" rx="4" fill="#68C776"/>
+    </g>
+  </g>
+</svg>

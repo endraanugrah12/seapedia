@@ -1,0 +1,20 @@
+{
+  "name": "seapedia-compfest18",
+  "version": "1.0.0",
+  "description": "SEAPEDIA marketplace web app built with Express and vanilla JavaScript.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js",
+    "reset-db": "node src/reset-db.js"
+  },
+  "keywords": ["seapedia", "marketplace", "compfest", "fullstack"],
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "swagger-ui-express": "^5.0.1"
+  }
+}
